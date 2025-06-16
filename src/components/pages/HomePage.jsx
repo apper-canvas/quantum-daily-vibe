@@ -6,10 +6,12 @@ import FeedContainer from "@/components/organisms/FeedContainer";
 import PersonalHistory from "@/components/organisms/PersonalHistory";
 import TimeRestriction from "@/components/molecules/TimeRestriction";
 import EmptyState from "@/components/molecules/EmptyState";
-import { bookmarkService, entryService, userDataService } from "@/services";
+import { bookmarkService, entryService, userDataService, promptService } from "@/services";
 import BookmarksModal from "@/components/organisms/BookmarksModal";
+import DailyPromptBanner from "@/components/molecules/DailyPromptBanner";
+
 const HomePage = () => {
-  const [entries, setEntries] = useState([]);
+const [entries, setEntries] = useState([]);
   const [userEntries, setUserEntries] = useState([]);
   const [bookmarks, setBookmarks] = useState([]);
   const [bookmarkedEntries, setBookmarkedEntries] = useState([]);
@@ -22,6 +24,7 @@ const HomePage = () => {
   const [hasMoreEntries, setHasMoreEntries] = useState(true);
   const [userRecentMoods, setUserRecentMoods] = useState([]);
   const [similarEntries, setSimilarEntries] = useState(new Set());
+  const [showPromptBanner, setShowPromptBanner] = useState(true);
   const feedRef = useRef(null);
   const loadFeedEntries = async (offset = 0, reset = false) => {
     try {
@@ -153,8 +156,19 @@ const handleEntrySubmit = async (entryData) => {
   const handleLoadMore = () => {
     if (hasMoreEntries && !loading) {
       loadFeedEntries(feedOffset);
-    }
+}
   };
+
+  const handlePromptDismiss = () => {
+    setShowPromptBanner(false);
+    promptService.dismissForToday();
+  };
+
+  useEffect(() => {
+    // Check if prompt banner should be shown
+    setShowPromptBanner(!promptService.isDismissedForToday());
+  }, []);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -169,7 +183,7 @@ const handleEntrySubmit = async (entryData) => {
     );
   }
 
-  return (
+return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <motion.header 
@@ -185,6 +199,12 @@ const handleEntrySubmit = async (entryData) => {
             A space for anonymous daily thoughts. One sentence, infinite connection.
           </p>
         </motion.header>
+
+        <AnimatePresence>
+          {showPromptBanner && (
+            <DailyPromptBanner onDismiss={handlePromptDismiss} />
+          )}
+        </AnimatePresence>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Entry Input Section */}
