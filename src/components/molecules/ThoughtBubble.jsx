@@ -53,9 +53,9 @@ return (
                   scale: [1, 1.2, 1],
                   rotate: [0, 15, -15, 0]
                 } : {}}
-                transition={{ duration: 0.4 }}
+transition={{ duration: 0.4 }}
               >
-                <ApperIcon name="Bookmark" className="w-4 h-4" />
+                <ApperIcon name={isBookmarked ? "BookmarkFilled" : "Bookmark"} className="w-4 h-4" />
               </motion.button>
             )}
             <time dateTime={new Date(entry.timestamp).toISOString()}>
