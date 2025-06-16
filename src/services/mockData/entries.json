@@ -1,0 +1,72 @@
+[
+  {
+    "Id": 1,
+    "text": "Today I realized that small moments of kindness ripple further than we imagine.",
+    "mood": "grateful",
+    "timestamp": 1703875200000,
+    "isOwn": false
+  },
+  {
+    "Id": 2,
+    "text": "The rain sounds like a thousand gentle conversations happening at once.",
+    "mood": "peaceful",
+    "timestamp": 1703861600000,
+    "isOwn": false
+  },
+  {
+    "Id": 3,
+    "text": "Sometimes being lost leads to the most beautiful discoveries.",
+    "mood": "reflective",
+    "timestamp": 1703848000000,
+    "isOwn": false
+  },
+  {
+    "Id": 4,
+    "text": "Coffee tastes better when shared with strangers who become friends.",
+    "mood": "warm",
+    "timestamp": 1703834400000,
+    "isOwn": false
+  },
+  {
+    "Id": 5,
+    "text": "The sunset tonight painted the sky in colors I didn't know existed.",
+    "mood": "creative",
+    "timestamp": 1703820800000,
+    "isOwn": false
+  },
+  {
+    "Id": 6,
+    "text": "Dancing in my room at 2am reminds me that joy doesn't need an audience.",
+    "mood": "energetic",
+    "timestamp": 1703807200000,
+    "isOwn": false
+  },
+  {
+    "Id": 7,
+    "text": "The library silence felt like a warm hug for my overstimulated mind.",
+    "mood": "serene",
+    "timestamp": 1703793600000,
+    "isOwn": false
+  },
+  {
+    "Id": 8,
+    "text": "My grandmother's recipe still tastes like childhood memories and unconditional love.",
+    "mood": "grateful",
+    "timestamp": 1703780000000,
+    "isOwn": false
+  },
+  {
+    "Id": 9,
+    "text": "The ocean whispers secrets that only those who listen closely can understand.",
+    "mood": "peaceful",
+    "timestamp": 1703766400000,
+    "isOwn": false
+  },
+  {
+    "Id": 10,
+    "text": "Today I learned that vulnerability is not weakness, but the birthplace of courage.",
+    "mood": "reflective",
+    "timestamp": 1703752800000,
+    "isOwn": false
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "Id": 1,
+    "name": "serene",
+    "hex": "#88B0D3",
+    "label": "Serene"
+  },
+  {
+    "Id": 2,
+    "name": "creative",
+    "hex": "#6B5B95",
+    "label": "Creative"
+  },
+  {
+    "Id": 3,
+    "name": "warm",
+    "hex": "#FF6B6B",
+    "label": "Warm"
+  },
+  {
+    "Id": 4,
+    "name": "energetic",
+    "hex": "#FFE66D",
+    "label": "Energetic"
+  },
+  {
+    "Id": 5,
+    "name": "peaceful",
+    "hex": "#4ECDC4",
+    "label": "Peaceful"
+  },
+  {
+    "Id": 6,
+    "name": "reflective",
+    "hex": "#B8A5C7",
+    "label": "Reflective"
+  },
+  {
+    "Id": 7,
+    "name": "grateful",
+    "hex": "#F4A261",
+    "label": "Grateful"
+  }
+]

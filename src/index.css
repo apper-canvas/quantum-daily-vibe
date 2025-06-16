@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import 'react-toastify/dist/ReactToastify.css';
+
+@layer base {
+  body {
+    @apply font-body bg-background text-gray-800 antialiased;
+    height: 100vh;
+    overflow-x: hidden;
+  }
+  
+  #root {
+    height: 100vh;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer components {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .thought-bubble {
+    @apply bg-white rounded-2xl p-6 shadow-soft border border-gray-100 transition-all duration-200 hover:shadow-lift hover:-translate-y-1;
+  }
+  
+  .mood-gradient {
+    background: linear-gradient(135deg, var(--mood-color), transparent);
+  }
+  
+  .character-counter {
+    @apply text-sm font-medium transition-colors duration-200;
+  }
+  
+  .character-counter.warning {
+    @apply text-warning;
+  }
+  
+  .character-counter.danger {
+    @apply text-error animate-pulse-gentle;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
