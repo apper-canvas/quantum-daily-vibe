@@ -4,7 +4,7 @@ import ThoughtBubble from '@/components/molecules/ThoughtBubble';
 import LoadingState from '@/components/atoms/LoadingState';
 import ApperIcon from '@/components/ApperIcon';
 
-const FeedContainer = forwardRef(({ entries, onLoadMore, hasMore, userRecentMoods = [], similarEntries = new Set() }, ref) => {
+const FeedContainer = forwardRef(({ entries, onLoadMore, hasMore, userRecentMoods = [], similarEntries = new Set(), bookmarks = [], onBookmark, isEntryBookmarked }, ref) => {
   const containerRef = useRef(null);
   const observerRef = useRef(null);
   const lastEntryRef = useCallback(node => {
@@ -71,6 +71,8 @@ const FeedContainer = forwardRef(({ entries, onLoadMore, hasMore, userRecentMood
             <ThoughtBubble 
               entry={entry} 
               isSimilar={similarEntries.has(entry.Id)}
+              isBookmarked={isEntryBookmarked && isEntryBookmarked(entry.Id)}
+              onBookmark={onBookmark}
             />
           </motion.div>
         ))}

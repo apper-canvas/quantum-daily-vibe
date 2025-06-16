@@ -137,8 +137,18 @@ async getUserEntries() {
         }
       }
     });
+return similarEntryIds;
+  },
+
+  async getBookmarkedEntries(bookmarkIds) {
+    await delay();
+    if (!bookmarkIds || bookmarkIds.length === 0) return [];
     
-    return similarEntryIds;
+    const bookmarkedEntries = entries
+      .filter(entry => bookmarkIds.includes(entry.Id))
+      .sort((a, b) => b.timestamp - a.timestamp);
+    
+    return bookmarkedEntries.map(entry => ({ ...entry }));
   }
 };
 

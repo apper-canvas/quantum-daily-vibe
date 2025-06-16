@@ -1,20 +1,23 @@
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'react-toastify';
-import EntryInput from '@/components/organisms/EntryInput';
-import FeedContainer from '@/components/organisms/FeedContainer';
-import PersonalHistory from '@/components/organisms/PersonalHistory';
-import TimeRestriction from '@/components/molecules/TimeRestriction';
-import EmptyState from '@/components/molecules/EmptyState';
-import { entryService, userDataService } from '@/services';
-
+import React, { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "react-toastify";
+import EntryInput from "@/components/organisms/EntryInput";
+import FeedContainer from "@/components/organisms/FeedContainer";
+import PersonalHistory from "@/components/organisms/PersonalHistory";
+import TimeRestriction from "@/components/molecules/TimeRestriction";
+import EmptyState from "@/components/molecules/EmptyState";
+import { bookmarkService, entryService, userDataService } from "@/services";
+import BookmarksModal from "@/components/organisms/BookmarksModal";
 const HomePage = () => {
   const [entries, setEntries] = useState([]);
   const [userEntries, setUserEntries] = useState([]);
+  const [bookmarks, setBookmarks] = useState([]);
+  const [bookmarkedEntries, setBookmarkedEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [canPost, setCanPost] = useState(false);
   const [timeUntilNext, setTimeUntilNext] = useState(0);
   const [showHistory, setShowHistory] = useState(false);
+  const [showBookmarks, setShowBookmarks] = useState(false);
   const [feedOffset, setFeedOffset] = useState(0);
   const [hasMoreEntries, setHasMoreEntries] = useState(true);
   const [userRecentMoods, setUserRecentMoods] = useState([]);
@@ -37,17 +40,26 @@ const HomePage = () => {
 
 const loadUserData = async () => {
     try {
-      const [canPostResult, timeRemaining, userEntriesResult, recentMoods] = await Promise.all([
+      const [canPostResult, timeRemaining, userEntriesResult, recentMoods, bookmarksResult] = await Promise.all([
         userDataService.canPost(),
         userDataService.getTimeUntilNextPost(),
         entryService.getUserEntries(),
-        entryService.getUserRecentMoods(7)
+        entryService.getUserRecentMoods(7),
+        bookmarkService.getAll()
       ]);
       
       setCanPost(canPostResult);
       setTimeUntilNext(timeRemaining);
       setUserEntries(userEntriesResult);
       setUserRecentMoods(recentMoods);
+      setBookmarks(bookmarksResult);
+      
+      // Load bookmarked entries
+      if (bookmarksResult.length > 0) {
+        const entryIds = bookmarksResult.map(b => b.entryId);
+        const bookmarkedEntriesResult = await entryService.getBookmarkedEntries(entryIds);
+        setBookmarkedEntries(bookmarkedEntriesResult);
+      }
       
       // Calculate similar entries based on recent moods
       if (recentMoods.length > 0) {
@@ -58,7 +70,6 @@ const loadUserData = async () => {
       toast.error('Failed to load user data');
     }
   };
-
   useEffect(() => {
     const initializeApp = async () => {
       setLoading(true);
@@ -108,6 +119,35 @@ const handleEntrySubmit = async (entryData) => {
     } catch (error) {
       toast.error('Failed to share your thought');
     }
+};
+
+  const handleBookmark = async (entryId) => {
+    try {
+      const existingBookmark = bookmarks.find(b => b.entryId === entryId);
+      
+      if (existingBookmark) {
+        // Remove bookmark
+        await bookmarkService.delete(existingBookmark.Id);
+        setBookmarks(prev => prev.filter(b => b.Id !== existingBookmark.Id));
+        setBookmarkedEntries(prev => prev.filter(e => e.Id !== entryId));
+        toast.success('Bookmark removed');
+      } else {
+        // Add bookmark
+        const newBookmark = await bookmarkService.create(entryId);
+        const entry = entries.find(e => e.Id === entryId);
+        if (entry) {
+          setBookmarks(prev => [newBookmark, ...prev]);
+          setBookmarkedEntries(prev => [entry, ...prev]);
+          toast.success('Entry bookmarked');
+        }
+      }
+    } catch (error) {
+      toast.error('Failed to update bookmark');
+    }
+  };
+
+  const isEntryBookmarked = (entryId) => {
+    return bookmarks.some(b => b.entryId === entryId);
   };
 
   const handleLoadMore = () => {
@@ -115,7 +155,6 @@ const handleEntrySubmit = async (entryData) => {
       loadFeedEntries(feedOffset);
     }
   };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -162,15 +201,27 @@ const handleEntrySubmit = async (entryData) => {
                 <TimeRestriction timeRemaining={timeUntilNext} />
               )}
               
-              {userEntries.length > 0 && (
-                <button
-                  onClick={() => setShowHistory(!showHistory)}
-                  className="w-full px-4 py-3 bg-white rounded-2xl shadow-soft border border-gray-100 
-                           hover:shadow-lift transition-all duration-200 text-gray-700 font-medium"
-                >
-                  {showHistory ? 'Hide' : 'Show'} Your Thoughts ({userEntries.length})
-                </button>
-              )}
+<div className="space-y-3">
+                {userEntries.length > 0 && (
+                  <button
+                    onClick={() => setShowHistory(!showHistory)}
+                    className="w-full px-4 py-3 bg-white rounded-2xl shadow-soft border border-gray-100 
+                             hover:shadow-lift transition-all duration-200 text-gray-700 font-medium"
+                  >
+                    {showHistory ? 'Hide' : 'Show'} Your Thoughts ({userEntries.length})
+                  </button>
+                )}
+                
+                {bookmarkedEntries.length > 0 && (
+                  <button
+                    onClick={() => setShowBookmarks(!showBookmarks)}
+                    className="w-full px-4 py-3 bg-white rounded-2xl shadow-soft border border-gray-100 
+                             hover:shadow-lift transition-all duration-200 text-gray-700 font-medium"
+                  >
+                    {showBookmarks ? 'Hide' : 'Show'} Your Bookmarks ({bookmarkedEntries.length})
+                  </button>
+                )}
+              </div>
             </div>
           </motion.div>
 
@@ -194,18 +245,27 @@ const handleEntrySubmit = async (entryData) => {
                 hasMore={hasMoreEntries}
                 userRecentMoods={userRecentMoods}
                 similarEntries={similarEntries}
+                bookmarks={bookmarks}
+                onBookmark={handleBookmark}
+                isEntryBookmarked={isEntryBookmarked}
                 ref={feedRef}
               />
             )}
           </motion.div>
         </div>
 
-        {/* Personal History Sidebar */}
+{/* Personal History & Bookmarks Modals */}
         <AnimatePresence>
           {showHistory && (
             <PersonalHistory
               entries={userEntries}
               onClose={() => setShowHistory(false)}
+            />
+          )}
+          {showBookmarks && (
+            <BookmarksModal
+              entries={bookmarkedEntries}
+              onClose={() => setShowBookmarks(false)}
             />
           )}
         </AnimatePresence>

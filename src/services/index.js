@@ -1,3 +1,10 @@
-export { default as entryService } from './api/entryService';
-export { default as userDataService } from './api/userDataService';
-export { default as moodService } from './api/moodService';
+import entryService from '@/services/api/entryService';
+import moodService from '@/services/api/moodService';
+import userDataService from '@/services/api/userDataService';
+import bookmarkService from '@/services/api/bookmarkService';
+export {
+  entryService,
+  moodService,
+  userDataService,
+  bookmarkService
+};
