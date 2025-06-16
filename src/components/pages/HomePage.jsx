@@ -17,8 +17,9 @@ const HomePage = () => {
   const [showHistory, setShowHistory] = useState(false);
   const [feedOffset, setFeedOffset] = useState(0);
   const [hasMoreEntries, setHasMoreEntries] = useState(true);
+  const [userRecentMoods, setUserRecentMoods] = useState([]);
+  const [similarEntries, setSimilarEntries] = useState(new Set());
   const feedRef = useRef(null);
-
   const loadFeedEntries = async (offset = 0, reset = false) => {
     try {
       const feedEntries = await entryService.getFeed(20, offset);
@@ -34,17 +35,25 @@ const HomePage = () => {
     }
   };
 
-  const loadUserData = async () => {
+const loadUserData = async () => {
     try {
-      const [canPostResult, timeRemaining, userEntriesResult] = await Promise.all([
+      const [canPostResult, timeRemaining, userEntriesResult, recentMoods] = await Promise.all([
         userDataService.canPost(),
         userDataService.getTimeUntilNextPost(),
-        entryService.getUserEntries()
+        entryService.getUserEntries(),
+        entryService.getUserRecentMoods(7)
       ]);
       
       setCanPost(canPostResult);
       setTimeUntilNext(timeRemaining);
       setUserEntries(userEntriesResult);
+      setUserRecentMoods(recentMoods);
+      
+      // Calculate similar entries based on recent moods
+      if (recentMoods.length > 0) {
+        const similarIds = await entryService.calculateSimilarEntries(recentMoods);
+        setSimilarEntries(similarIds);
+      }
     } catch (error) {
       toast.error('Failed to load user data');
     }
@@ -79,7 +88,7 @@ const HomePage = () => {
     }
   }, [timeUntilNext]);
 
-  const handleEntrySubmit = async (entryData) => {
+const handleEntrySubmit = async (entryData) => {
     try {
       const newEntry = await entryService.create(entryData);
       await userDataService.addEntry(newEntry);
@@ -88,6 +97,12 @@ const HomePage = () => {
       setUserEntries(prev => [newEntry, ...prev]);
       setCanPost(false);
       setTimeUntilNext(24 * 60 * 60 * 1000); // 24 hours
+      
+      // Update recent moods and recalculate similar entries
+      const updatedMoods = await entryService.getUserRecentMoods(7);
+      setUserRecentMoods(updatedMoods);
+      const similarIds = await entryService.calculateSimilarEntries(updatedMoods);
+      setSimilarEntries(similarIds);
       
       toast.success('Your thought has been shared with the world ✨');
     } catch (error) {
@@ -173,10 +188,12 @@ const HomePage = () => {
                 showAction={canPost}
               />
             ) : (
-              <FeedContainer
+<FeedContainer
                 entries={entries}
                 onLoadMore={handleLoadMore}
                 hasMore={hasMoreEntries}
+                userRecentMoods={userRecentMoods}
+                similarEntries={similarEntries}
                 ref={feedRef}
               />
             )}

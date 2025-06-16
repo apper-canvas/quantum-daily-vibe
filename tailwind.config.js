@@ -28,7 +28,7 @@ export default {
           800: '#424242',
           900: '#212121'
         },
-        mood: {
+mood: {
           serene: '#88B0D3',
           creative: '#6B5B95',
           warm: '#FF6B6B',
@@ -36,6 +36,10 @@ export default {
           peaceful: '#4ECDC4',
           reflective: '#B8A5C7',
           grateful: '#F4A261'
+        },
+        highlight: {
+          subtle: 'rgba(255, 255, 255, 0.4)',
+          glow: 'rgba(255, 255, 255, 0.6)'
         }
       },
       fontFamily: {

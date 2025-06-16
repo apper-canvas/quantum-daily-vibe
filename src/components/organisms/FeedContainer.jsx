@@ -4,10 +4,9 @@ import ThoughtBubble from '@/components/molecules/ThoughtBubble';
 import LoadingState from '@/components/atoms/LoadingState';
 import ApperIcon from '@/components/ApperIcon';
 
-const FeedContainer = forwardRef(({ entries, onLoadMore, hasMore }, ref) => {
+const FeedContainer = forwardRef(({ entries, onLoadMore, hasMore, userRecentMoods = [], similarEntries = new Set() }, ref) => {
   const containerRef = useRef(null);
   const observerRef = useRef(null);
-
   const lastEntryRef = useCallback(node => {
     if (observerRef.current) observerRef.current.disconnect();
     observerRef.current = new IntersectionObserver(entries => {
@@ -63,13 +62,16 @@ const FeedContainer = forwardRef(({ entries, onLoadMore, hasMore }, ref) => {
         animate="visible"
         className="space-y-4"
       >
-        {entries.map((entry, index) => (
+{entries.map((entry, index) => (
           <motion.div
             key={entry.Id}
             variants={itemVariants}
             ref={index === entries.length - 1 ? lastEntryRef : null}
           >
-            <ThoughtBubble entry={entry} />
+            <ThoughtBubble 
+              entry={entry} 
+              isSimilar={similarEntries.has(entry.Id)}
+            />
           </motion.div>
         ))}
       </motion.div>

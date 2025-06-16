@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import MoodIndicator from '@/components/atoms/MoodIndicator';
 
-const ThoughtBubble = ({ entry, showOwn = false }) => {
+const ThoughtBubble = ({ entry, showOwn = false, isSimilar = false }) => {
   const moodColors = {
     serene: '#88B0D3',
     creative: '#6B5B95',
@@ -15,14 +15,16 @@ const ThoughtBubble = ({ entry, showOwn = false }) => {
 
   const moodColor = moodColors[entry.mood] || moodColors.serene;
 
-  return (
+return (
     <motion.div
-      className={`thought-bubble relative overflow-hidden ${entry.isOwn ? 'border-l-4 border-primary' : ''}`}
+      className={`thought-bubble relative overflow-hidden ${entry.isOwn ? 'border-l-4 border-primary' : ''} ${isSimilar ? 'ring-1 ring-white ring-opacity-30' : ''}`}
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.2 }}
       style={{
         background: entry.isOwn 
           ? `linear-gradient(135deg, ${moodColor}10, transparent)`
+          : isSimilar
+          ? `linear-gradient(135deg, ${moodColor}15, rgba(255, 255, 255, 0.1))`
           : `linear-gradient(135deg, ${moodColor}08, transparent)`
       }}
     >
