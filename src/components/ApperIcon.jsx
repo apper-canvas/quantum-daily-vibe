@@ -143,10 +143,9 @@ import {
   Move,
   RotateCcw,
   RotateCw,
-  FlipHorizontal,
+FlipHorizontal,
   FlipVertical,
   Crop,
-  Zoom,
   ZoomIn,
   ZoomOut
 } from 'lucide-react';
@@ -295,10 +294,9 @@ const iconMap = {
   Move,
   RotateCcw,
   RotateCw,
-  FlipHorizontal,
+FlipHorizontal,
   FlipVertical,
   Crop,
-  Zoom,
   ZoomIn,
   ZoomOut
 };
