@@ -1,5 +1,5 @@
-export { default as entryService } from './api/entryService.js';
-export { default as moodService } from './api/moodService.js';
-export { default as bookmarkService } from './api/bookmarkService.js';
-export { default as userDataService } from './api/userDataService.js';
-export { default as promptService } from './api/promptService.js';
+export { entryService } from './api/entryService.js';
+export { moodService } from './api/moodService.js';
+export { bookmarkService } from './api/bookmarkService.js';
+export { userDataService } from './api/userDataService.js';
+export { promptService } from './api/promptService.js';
