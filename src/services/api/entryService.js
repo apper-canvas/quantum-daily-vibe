@@ -152,4 +152,4 @@ return similarEntryIds;
   }
 };
 
-export default entryService;
+export { entryService };
