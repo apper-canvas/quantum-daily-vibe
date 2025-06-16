@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { routes } from '@/config/routes';
 
-const Layout = () => {
+function Layout() {
   return (
     <div className="min-h-screen bg-background">
       <Routes>
